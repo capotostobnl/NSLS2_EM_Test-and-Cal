@@ -1,0 +1,32 @@
+# --- Virtual Environment ---
+.venv/
+env/
+venv/
+.vscode/
+
+# --- Byte-code, Compilation, and Testing ---
+# Python compiled objects
+__pycache__/
+*.pyc
+*.pyd
+*.so
+
+# Distribution / Packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.manifest
+
+# Pytest / Coverage
+.cache/
+.pytest_cache/
+.coverage
