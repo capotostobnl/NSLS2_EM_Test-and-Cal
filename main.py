@@ -8,6 +8,7 @@ M. Capotosto
 8/29/2025
 NSLS-II Diagnostics and Instrumentation"""
 
+
 # *****************************************************************************
 # ******IMPORTS******
 import csv
@@ -18,11 +19,14 @@ from datetime import datetime
 
 from directory_manager import ProjectDirectoryManager as dirman
 
-from instrument_modules.electrometer import Electrometer
-from instrument_modules.plc import Plc
-from instrument_modules.rigol_dp800 import DP800
+import instrument_module
+#from instrument_modules.electrometer import Electrometer
+from instrument_module import DP800
 from instrument_modules.keithley_2100 import Keithley2100
 from instrument_modules.keithley_6221 import Keithley6221
+
+from plc import *
+
 
 from functional_tests import bias_test
 from functional_tests import dac_test
@@ -39,9 +43,9 @@ PV_PREFIX = ""
 # ******Set Insturment IP Addresses******
 
 PSU_IP_ADDRESS = "10.0.142.1"  # Set PSU IP Address here
-DMM_ADDRESS = "USB0::0x05E6::0x2100::8020357::INSTR"
-I_SOUR_ADDRESS = ""
-PLC_IP_ADDRESS = ""
+DMM_ADDRESS = "10.0.143.26"
+I_SOUR_ADDRESS = "10.0.143.27"
+PLC_IP_ADDRESS = "10.0.143.41"
 
 # *************************************************************************
 
