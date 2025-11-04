@@ -19,13 +19,15 @@ from datetime import datetime
 
 from directory_manager import ProjectDirectoryManager as dirman
 
-import instrument_module
-#from instrument_modules.electrometer import Electrometer
-from instrument_module import DP800
-from instrument_modules.keithley_2100 import Keithley2100
-from instrument_modules.keithley_6221 import Keithley6221
+import electrometer
 
-from plc import *
+from IP_Addresses import *
+from instrument_module import DP800
+#from instrument_module import Keithley2100
+from instrument_module import Keithley6221
+from instrument_module import keysight_34461a
+
+from plc import PLC
 
 
 from functional_tests import bias_test
@@ -35,31 +37,20 @@ from functional_tests import dac_test
 
 # *****************************************************************************
 # ******CONSTANTS******
+PV_PREFIX = ""
+# *****************************************************************************
+
+
+# ******Create Instrument Objects******
+psu = DP800(connection_method="IP", address=PSU_IP_ADDRESS)
+#dmm = Keithley2100(connection_method="USB", address=DMM_ADDRESS)
+dmm = keysight_34461a(connection_method="IP", address=DMM_IP_ADDRESS)
+i_sour = Keithley6221(connection_method="IP", address=I_SOUR_IP_ADDRESS)
+plc = PLC(PLC_IP_ADDRESS)
+em = electrometer()
+# *****************************************************************************
 
 # *****************************************************************************
-PV_PREFIX = ""
-
-# *************************************************************************
-# ******Set Insturment IP Addresses******
-
-PSU_IP_ADDRESS = "10.0.142.1"  # Set PSU IP Address here
-DMM_ADDRESS = "10.0.143.26"
-I_SOUR_ADDRESS = "10.0.143.27"
-PLC_IP_ADDRESS = "10.0.143.41"
-
-# *************************************************************************
-
-# *************************************************************************
-# ******Create Instrument Objects******
-
-psu = DP800(connection_method="IP", address=PSU_IP_ADDRESS)
-dmm = Keithley2100(connection_method="USB", address=DMM_ADDRESS)
-i_sour = Keithley6221(connection_method="IP", address=I_SOUR_ADDRESS)
-plc = Plc(PLC_IP_ADDRESS)
-em = Electrometer()
-# *************************************************************************
-
-# *************************************************************************
 # ******Get Tech Info******
 def get_test_tech_info():
     """Acquire static test technician information"""
