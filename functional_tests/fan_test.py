@@ -8,8 +8,8 @@ NSLS-II Diagnostics and Instrumentation
 """
 from time import sleep
 
-from instrument_modules.plc import Plc
-from instrument_modules.keithley_2100 import Keithley2100
+from plc import PLC
+from instrument_module.keithley_2100 import Keithley2100
 
 # *****************************************************************************
 # ******Pass/Fail Constants******
@@ -24,7 +24,7 @@ PIN_3_V_HIGH = 5.25
 # *****************************************************************************
 
 
-def fan_header_voltage_test(plc: Plc, dmm: Keithley2100):
+def fan_header_voltage_test(plc: PLC, dmm: Keithley2100):
     """
     Measures the voltage on fan header pins (CR13, CR14, and CR15) and
     checks if they pass or fail.

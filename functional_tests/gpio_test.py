@@ -4,12 +4,36 @@
 M. Capotosto
 9/1/2025
 NSLS-II Diagnostics and Instrumentation
+
+Overview
+--------
+Two primary test routines are implemented:
+
+1. gpio_out_test()
+   - Drives each GPIO output channel (OUT0–OUT3) to LOW and HIGH states
+     via EPICS PV writes.
+   - Enables the corresponding PLC-controlled cross-connect relay to route the
+     output signal to the Keithley 2100 DMM.
+   - Measures the actual voltage level and validates it against configurable
+     tolerance limits for LOW (≈0 V) and HIGH (≈5 V).
+   - Returns a structured dictionary summarizing pass/fail status and measured
+     voltages for each channel.
+
+2. gpio_input_test()
+   - Sequentially drives each GPIO output channel and reads its associated
+     input status PV (Status-I.B0–B3).
+   - Confirms that the digital input readback correctly reflects the output
+     logic level.
+   - Produces a per-channel summary of expected vs. observed input states.
+
 """
 from time import sleep
 
-from instrument_modules.plc import Plc
-from instrument_modules.keithley_2100 import Keithley2100
-from instrument_modules.electrometer import Electrometer
+from plc import PLC
+from electrometer import Electrometer
+
+from instrument_module.keithley_2100 import Keithley2100
+
 
 
 # *****************************************************************************
@@ -31,7 +55,7 @@ def _test_gpio_out_setpoint(dmm, em, pv_name, setpoint, lim_low, lim_high):
     measured_voltage = round(dmm.meas_dcv(), 3)
 
     # Check if the measured voltage is within the specified limits
-    test_passed = lim_high <= measured_voltage <= lim_low
+    test_passed = lim_low <= measured_voltage <= lim_high
 
     return {
         "setpoint": setpoint,
@@ -40,7 +64,7 @@ def _test_gpio_out_setpoint(dmm, em, pv_name, setpoint, lim_low, lim_high):
     }
 
 
-def gpio_out_test(plc: Plc, dmm: Keithley2100, em: Electrometer):
+def gpio_out_test(plc: PLC, dmm: Keithley2100, em: Electrometer):
     """Set and measure DAC channel voltages"""
     print("Initializing DAC test...")
 
@@ -100,7 +124,7 @@ def gpio_out_test(plc: Plc, dmm: Keithley2100, em: Electrometer):
     return results
 
 
-def gpio_input_test(em: Electrometer):
+def gpio_input_test(em: Electrometer, plc: PLC):
     """Test GPIO Inputs"""
     gpio_input_pvs = ["Status-I.B0", "Status-I.B1", "Status-I.B2",
                       "Status-I.B3"]

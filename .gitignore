@@ -30,3 +30,6 @@ var/
 .cache/
 .pytest_cache/
 .coverage
+
+
+*TEMP*

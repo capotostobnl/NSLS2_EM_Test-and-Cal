@@ -20,8 +20,12 @@ from datetime import datetime
 from directory_manager import ProjectDirectoryManager as dirman
 
 import electrometer
+import 
 
-from IP_Addresses import *
+from IP_Addresses_PVs import PLC_IP_ADDRESS, DMM_IP_ADDRESS, \
+                             I_SOUR_IP_ADDRESS, PSU_IP_ADDRESS, \
+                             EM_PV_PREFIX
+
 from instrument_module import DP800
 #from instrument_module import Keithley2100
 from instrument_module import Keithley6221
@@ -32,12 +36,17 @@ from plc import PLC
 
 from functional_tests import bias_test
 from functional_tests import dac_test
+from functional_tests import gpio_test
+from functional_tests import fan_test
+
 # *****************************************************************************
 
+def placeholder():
+    raise NotImplementedError("Function not implemented yet")
 
 # *****************************************************************************
 # ******CONSTANTS******
-PV_PREFIX = ""
+
 # *****************************************************************************
 
 
@@ -47,7 +56,7 @@ psu = DP800(connection_method="IP", address=PSU_IP_ADDRESS)
 dmm = keysight_34461a(connection_method="IP", address=DMM_IP_ADDRESS)
 i_sour = Keithley6221(connection_method="IP", address=I_SOUR_IP_ADDRESS)
 plc = PLC(PLC_IP_ADDRESS)
-em = electrometer()
+em = electrometer(pv_prefix=EM_PV_PREFIX)
 # *****************************************************************************
 
 # *****************************************************************************
@@ -138,7 +147,57 @@ if __name__ == '__main__':
     print("Directory structure is prepared...")
     print("-" * 75)
 
+
+    # *************************************************************************
+    # ******Visual Inspection******
+    while True:
+        vis_insp = input("Did unit pass visual inspection? <Y/N> ").strip().upper()[:1]
+        if vis_insp in ("Y", "N"):
+            break
+        print("Must enter <Y> or <N>...") 
+
+    # *************************************************************************
+    # ******Voltage Card - With/Without? ******
+    while True:
+        voltage_card_present = input("Does the unit contain a voltage card? <Y/N> ").strip().upper()[:1]
+        if voltage_card_present in ("Y", "N"):
+            if voltage_card_present == "Y":
+                voltage_card_present=True
+            else:
+                voltage_card_present=False
+            break
+        print("Must enter <Y> or <N>...")
+
+    # *************************************************************************
+    # ******Functional Test Only, or CAL?******
+        
+
+    # *************************************************************************
+    # ******Perform All Tests?******
+    while True:
+        test_skip = input("Will any tests be skipped? <Y/N>").strip().upper()[:1]
+        if test_skip in ("Y", "N"):
+            if test_skip == "Y":
+                ###############################################################################
+                break     
+        else:
+            #Invalid input...
+            print("Must enter <Y> or <N>...")
+
+
+    # *************************************************************************
+    # ******Power On Test******
+        # Power on, check V, I...
+    
+    # *************************************************************************
+    # ******COM, ETH Test******
+        
+    # *************************************************************************
+    # ******GPI/O Testing******
+    # *************************************************************************
+
     # ******V_BIAS Testing******
+    if test_skip
     print("\nBeginning Bias Voltage output testing...")
     bias_test_results = bias_test.v_bias_test(plc, dmm, em)
     print("-" * 75)
@@ -147,4 +206,25 @@ if __name__ == '__main__':
     # ******DAC Voltage Testing******
     print("\nBeginning DAC Voltage output testing...")
     dac_test_results = dac_test.dac_test(plc, dmm, em)
+    print("-" * 75)
+
+    # ******DIGITAL GPIO TESTING******
+    print("\nBeginning Digital GPIO Testing...")
+    gpio_test_results = gpio_test.gpio_input_test(plc, em)
+    print("-" * 75)
+
+    # ******Fan Test******
+    print("\nBeginning Fan Test...")
+    fan_test_results = fan_test.fan_header_voltage_test(plc, dmm)
+    print("-" * 75)
+
+    # ******Voltage Cal******
+    if voltage_card_present: 
+        print("\nBeginning Voltage Daughterboard Calibration...")
+        voltage_cal_results = 
+        print("-" * 75)
+
+    # ******Current Calibration******
+    print("\nBeginning Current Calibration...")
+    current_cal_results = 
     print("-" * 75)
